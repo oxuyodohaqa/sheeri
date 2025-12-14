@@ -1,9 +1,12 @@
 """Program Utama Verifikasi Guru SheerID"""
-import re
-import random
+import argparse
+import json
 import logging
-import httpx
+import random
+import re
 from typing import Dict, Optional, Tuple
+
+import httpx
 
 # Mendukung import sebagai package maupun run sebagai script
 try:
@@ -11,9 +14,10 @@ try:
     from .name_generator import NameGenerator, generate_email, generate_birth_date  # type: ignore
     from .img_generator import generate_teacher_pdf, generate_teacher_png  # type: ignore
 except ImportError:
+    # Jalankan langsung via: python sheerid_verifier.py --verification-id <id>
     import config  # type: ignore
-    from k12.name_generator import NameGenerator, generate_email, generate_birth_date  # type: ignore
-    from k12.img_generator import generate_teacher_pdf, generate_teacher_png  # type: ignore
+    from name_generator import NameGenerator, generate_email, generate_birth_date  # type: ignore
+    from img_generator import generate_teacher_pdf, generate_teacher_png  # type: ignore
 
 # Import konstanta konfigurasi
 PROGRAM_ID = config.PROGRAM_ID
@@ -265,3 +269,79 @@ class SheerIDVerifier:
                 'message': str(e),
                 'verification_id': self.verification_id
             }
+
+
+def _print_schools() -> None:
+    """Cetak daftar sekolah yang tersedia untuk dipilih melalui CLI."""
+    print("Daftar ID sekolah yang tersedia:\n")
+    for school_id, school in SCHOOLS.items():
+        city = school.get('city')
+        state = school.get('state')
+        location = f" ({city}, {state})" if city and state else ""
+        print(f"- {school_id}: {school['name']}{location} | {school['type']}")
+
+
+def main() -> None:
+    """Jalankan verifikasi langsung dari command line (tanpa Docker)."""
+    parser = argparse.ArgumentParser(
+        description="SheerID teacher verification helper",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "--verification-id",
+        help="Nilai verificationId dari URL SheerID",
+    )
+    parser.add_argument(
+        "--url",
+        help="Tempelkan URL SheerID lengkap, verificationId akan diekstrak otomatis",
+    )
+    parser.add_argument("--first-name", dest="first_name", help="Nama depan (opsional)")
+    parser.add_argument("--last-name", dest="last_name", help="Nama belakang (opsional)")
+    parser.add_argument("--email", dest="email", help="Email (opsional, akan dibuat otomatis jika kosong)")
+    parser.add_argument(
+        "--birth-date",
+        dest="birth_date",
+        help="Tanggal lahir format YYYY-MM-DD (opsional)",
+    )
+    parser.add_argument(
+        "--school-id",
+        dest="school_id",
+        default=DEFAULT_SCHOOL_ID,
+        help="Pilih ID sekolah yang ada di config",
+    )
+    parser.add_argument(
+        "--list-schools",
+        action="store_true",
+        help="Tampilkan daftar ID sekolah lalu keluar",
+    )
+
+    args = parser.parse_args()
+
+    if args.list_schools:
+        _print_schools()
+        return
+
+    verification_id = args.verification_id
+    if not verification_id and args.url:
+        verification_id = SheerIDVerifier.parse_verification_id(args.url)
+    if not verification_id:
+        parser.error("Isi --verification-id atau --url dengan link SheerID")
+
+    if args.school_id not in SCHOOLS:
+        parser.error(f"School ID {args.school_id} tidak ditemukan di config")
+
+    verifier = SheerIDVerifier(verification_id)
+    result = verifier.verify(
+        first_name=args.first_name,
+        last_name=args.last_name,
+        email=args.email,
+        birth_date=args.birth_date,
+        school_id=args.school_id,
+    )
+
+    print("\nHasil verifikasi:")
+    print(json.dumps(result, indent=2))
+
+
+if __name__ == "__main__":
+    main()

@@ -17,6 +17,69 @@ SCHOOLS = {
         'country': 'US',
         'type': 'HIGH_SCHOOL'
     },
+    '4005357': {
+        'id': 4005357,
+        'idExtended': '4005357',
+        'name': '112 Alc Independent Study (Chaska, MN)',
+        'country': 'US',
+        'type': 'HIGH_SCHOOL',
+        'city': 'Chaska',
+        'state': 'MN'
+    },
+    '212196': {
+        'id': 212196,
+        'idExtended': '212196',
+        'name': '112 Alc Middle School (Chaska, MN)',
+        'country': 'US',
+        'type': 'K12',
+        'city': 'Chaska',
+        'state': 'MN'
+    },
+    '4005358': {
+        'id': 4005358,
+        'idExtended': '4005358',
+        'name': '112 Alc Seat-Based (Chaska, MN)',
+        'country': 'US',
+        'type': 'HIGH_SCHOOL',
+        'city': 'Chaska',
+        'state': 'MN'
+    },
+    '7106216': {
+        'id': 7106216,
+        'idExtended': '7106216',
+        'name': '112th Street Steam Academy (Los Angeles, CA)',
+        'country': 'US',
+        'type': 'K12',
+        'city': 'Los Angeles',
+        'state': 'CA'
+    },
+    '4668621': {
+        'id': 4668621,
+        'idExtended': '4668621',
+        'name': '11Th Street Alternative School (Bowling Green, KY)',
+        'country': 'US',
+        'type': 'HIGH_SCHOOL',
+        'city': 'Bowling Green',
+        'state': 'KY'
+    },
+    '194518': {
+        'id': 194518,
+        'idExtended': '194518',
+        'name': '11Th Street Alternative School (Bowling Green, KY)',
+        'country': 'US',
+        'type': 'K12',
+        'city': 'Bowling Green',
+        'state': 'KY'
+    },
+    '7105111': {
+        'id': 7105111,
+        'idExtended': '7105111',
+        'name': '122nd Street Elementary School (Los Angeles, CA)',
+        'country': 'US',
+        'type': 'K12',
+        'city': 'Los Angeles',
+        'state': 'CA'
+    },
     '3995271': {
         'id': 3995271,
         'idExtended': '3995271',
